@@ -4,8 +4,12 @@
  * User: johnleytondiaz
  * Date: 8/31/16
  * Time: 12:04 PM
+ * 
+ * Test for Main class to accomplish command chaining
+ *
+ * @package  symfony-command-chaining
+ * @author   johnleytondiaz <jdiaz@secureaudit.co>
  */
-
 namespace Tests\ChainCommandBundle;
 
 use ChainCommandBundle\ChainCommandBundle;

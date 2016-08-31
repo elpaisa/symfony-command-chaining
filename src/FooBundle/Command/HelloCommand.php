@@ -2,8 +2,13 @@
 /**
  * Created by IntelliJ IDEA.
  * User: johnleytondiaz
- * Date: 8/30/16
- * Time: 8:47 PM
+ * Date: 8/31/16
+ * Time: 12:04 PM
+ *
+ * Demo command
+ *
+ * @package  symfony-command-chaining
+ * @author   johnleytondiaz <jdiaz@secureaudit.co>
  */
 namespace FooBundle\Command;
 

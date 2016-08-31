@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Demo bundle for commands
+ *
+ * @package  symfony-command-chaining
+ * @author   johnleytondiaz <jdiaz@secureaudit.co>
+ */
 namespace FooBundle;
 
 use Symfony\Component\Console\Application;

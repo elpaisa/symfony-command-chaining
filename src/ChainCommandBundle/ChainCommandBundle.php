@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * Created by IntelliJ IDEA.
+ * User: johnleytondiaz
+ * Date: 8/31/16
+ * Time: 12:04 PM
+ *
+ * Main class to accomplish command chaining
+ *
+ * @package  symfony-command-chaining
+ * @author   johnleytondiaz <jdiaz@secureaudit.co>
+ */
 namespace ChainCommandBundle;
 
 use Symfony\Component\Console\Command\Command;
@@ -7,27 +17,34 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Application;
-use Carbon\Carbon;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ChainCommandBundle extends Bundle
 {
     /**
+     * Used to store command chain relationship
+     *
      * @var array
      */
     public $chain = [];
 
     /**
+     * Commands to track by the chaining class
+     *
      * @var array
      */
     public $trackThese = [];
 
     /**
+     * Monolog logging utility
+     *
      * @var LoggerInterface
      */
     private $_logger;
 
     /**
+     * Returns the logger interface
+     *
      * @return LoggerInterface
      */
     public function getLogger()

@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * Created by IntelliJ IDEA.
+ * User: johnleytondiaz
+ * Date: 8/31/16
+ * Time: 12:04 PM
+ *
+ * Demo bundle to chain commands
+ *
+ * @package  symfony-command-chaining
+ * @author   johnleytondiaz <jdiaz@secureaudit.co>
+ */
 namespace BarBundle;
 
 use Symfony\Component\Console\Application;
