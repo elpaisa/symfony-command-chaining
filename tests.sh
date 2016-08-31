@@ -5,6 +5,8 @@ STARTTIME=$(date +%s)
 
 BASEDIR=$(pwd)
 SOURCE_DIR=$BASEDIR/src
+
+PHPMD_BIN=./vendor/phpmd/phpmd/src/bin/phpmd
 FIX=${1-false}
 
 echo "Starting verification..."
@@ -37,14 +39,14 @@ ENDTIME=$(date +%s)
 echo "linting took $((ENDTIME - STARTTIME)) seconds to complete."
 
 #PHPMd not yet ready for php7
-#echo "Running phpmd on everything"
-#PHPMD_RESULTS=$(phpmd "$SOURCE_DIR"/ text phpmd.xml --suffixes php )
-#if [ $? -ne 0 ]; then
-#  echo "$PHPMD_RESULTS" >&2
-#  echo "Warning, phpmd does not like something. Please see the phpmd error message." >&2
-#  wait
-#  exit 1
-#fi
+echo "Running phpmd on everything"
+PHPMD_RESULTS=$($PHPMD_BIN "$SOURCE_DIR"/ text phpmd.xml --suffixes php )
+if [ $? -ne 0 ]; then
+  echo "$PHPMD_RESULTS" >&2
+  echo "Warning, phpmd does not like something. Please see the phpmd error message." >&2
+  wait
+  exit 1
+fi
 
 echo "running php unit tests"
 STARTTIME=$(date +%s)
