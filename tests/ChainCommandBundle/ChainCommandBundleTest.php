@@ -4,7 +4,7 @@
  * User: johnleytondiaz
  * Date: 8/31/16
  * Time: 12:04 PM
- * 
+ *
  * Test for Main class to accomplish command chaining
  *
  * @package  symfony-command-chaining
@@ -13,6 +13,7 @@
 namespace Tests\ChainCommandBundle;
 
 use ChainCommandBundle\ChainCommandBundle;
+use FooBundle\FooBundle;
 
 class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,6 +42,18 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Cleans chain attribute and returns the mocked class
+     * 
+     * @return ChainCommandBundle
+     */
+    public function getChainingBundle()
+    {
+        $this->chainBundle->chain = [];
+        
+        return $this->chainBundle;
+    }
+
+    /**
      * Test registerAsMemberOf method
      *
      * @author johnleytondiaz
@@ -51,12 +64,12 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
     {
         $chain  = 'foo:chain';
         $member = 'foo:member';
-        $this->chainBundle->registerAsMemberOf($chain, $member);
+        $chainBundle = $this->getChainingBundle();
+        $chainBundle->registerAsMemberOf($chain, $member);
 
-        $this->assertTrue(count($this->chainBundle->chain) > 0);
-        $this->assertEquals(array_keys($this->chainBundle->chain)[0], $chain);
-
-        $this->chainBundle->chain = [];
+        $this->assertTrue(count($chainBundle->chain) > 0);
+        $this->assertEquals(array_keys($chainBundle->chain)[0], $chain);
+ 
     }
 
     /**
@@ -71,12 +84,12 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
     {
         $chain  = 'foo:chain';
         $member = 'foo:member';
-        $this->chainBundle->registerAsMemberOf($chain, $member);
-        $this->chainBundle->registerAsMemberOf($chain, $member);
+        $chainBundle = $this->getChainingBundle();
+        $chainBundle->registerAsMemberOf($chain, $member);
+        $chainBundle->registerAsMemberOf($chain, $member);
 
-        $this->assertEquals(1, count($this->chainBundle->chain[$chain]));
+        $this->assertEquals(1, count($chainBundle->chain[$chain]));
 
-        $this->chainBundle->chain = [];
     }
 
     /**
@@ -88,6 +101,25 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisterDependencies()
     {
+        $chain = 'foo:chain';
+        $member = 'foo:member';
+        $command = $this
+            ->getMockBuilder(\FooBundle\FooBundle::class)
+            ->setMethods(['depends', 'getCommandName'])
+            ->getMock();
+        $command
+            ->expects($this->any())
+            ->method('depends')
+            ->willReturn([$chain]);
 
+        $command
+            ->method('getCommandName')
+            ->willReturn($member);
+
+        $chainBundle = $this->getChainingBundle();
+        $chainBundle->registerDependencies($command);
+
+        $this->assertEquals(array_keys($chainBundle->chain)[0], $chain);
+        $this->assertEquals($chainBundle->chain[$chain][0], $member);
     }
 }

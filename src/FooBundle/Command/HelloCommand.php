@@ -27,7 +27,7 @@ class HelloCommand extends ContainerAwareCommand implements ChainInterface
     /**
      * @return array
      */
-    public static function depends()
+    public function depends()
     {
         return [];
     }
@@ -35,7 +35,7 @@ class HelloCommand extends ContainerAwareCommand implements ChainInterface
     /**
      * @return string
      */
-    public static function getCommandName()
+    public function getCommandName()
     {
         return 'foo:bar';
     }
@@ -60,7 +60,7 @@ class HelloCommand extends ContainerAwareCommand implements ChainInterface
     protected function configure()
     {
         $this
-            ->setName(self::getCommandName())
+            ->setName($this->getCommandName())
             ->setDescription('Demo from hello.');
     }
 

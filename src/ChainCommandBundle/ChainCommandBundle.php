@@ -81,10 +81,10 @@ class ChainCommandBundle extends Bundle
      *
      * @param Command $class
      */
-    private function registerDependencies($class)
+    public function registerDependencies($class)
     {
-        $dependencies = $class::depends();
-        $member       = $class::getCommandName();
+        $dependencies = $class->depends();
+        $member       = $class->getCommandName();
 
         $this->trackThese[$member] = $class;
 

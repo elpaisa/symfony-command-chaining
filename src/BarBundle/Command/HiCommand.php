@@ -28,7 +28,7 @@ class HiCommand extends Command implements ChainInterface
     /**
      * @return array
      */
-    public static function depends()
+    public function depends()
     {
         return ['foo:bar'];
     }
@@ -36,7 +36,7 @@ class HiCommand extends Command implements ChainInterface
     /**
      * @return string
      */
-    public static function getCommandName()
+    public function getCommandName()
     {
         return 'bar:hi';
     }
@@ -60,7 +60,7 @@ class HiCommand extends Command implements ChainInterface
     protected function configure()
     {
         $this
-            ->setName(self::getCommandName())
+            ->setName($this->getCommandName())
             ->setDescription('Demo from bar hi.');
     }
 

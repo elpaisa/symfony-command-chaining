@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Created by IntelliJ IDEA.
  * User: johnleytondiaz
@@ -17,9 +16,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 interface ChainInterface
 {
-    public static function depends();
+    public function depends();
 
-    public static function getCommandName();
+    public function getCommandName();
     
     public function commandOutput(OutputInterface $output);
 }
