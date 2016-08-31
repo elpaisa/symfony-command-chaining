@@ -10,7 +10,9 @@
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",
-        "incenteev/composer-parameter-handler": "~2.0"
+        "incenteev/composer-parameter-handler": "~2.0",
+        "nesbot/Carbon": "~1.6",
+        "symfony/monolog-bundle": "~2.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",

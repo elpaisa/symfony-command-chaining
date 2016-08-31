@@ -17,10 +17,17 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
+//
+        $this->chainBundle = new ChainCommandBundle();
 
-        $this->chainBundle = $this->getMockBuilder(ChainCommandBundle::class)
-            ->setMethods(['registerAsMemberOf'])
+        $container = $this->getMockBuilder(\Symfony\Component\DependencyInjection\Container::class)
+            ->setMethods(['get'])
             ->getMock();
+        $container->expects($this->any())
+                  ->method('get')
+                  ->willReturn(new \Symfony\Bridge\Monolog\Logger('app'));
+
+        $this->chainBundle->setContainer($container);
     }
 
     /**
@@ -34,11 +41,12 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
     {
         $chain = 'foo:chain';
         $member = 'foo:member';
-        $chainBundle = new ChainCommandBundle();
-        $chainBundle->registerAsMemberOf($chain, $member);
+        $this->chainBundle->registerAsMemberOf($chain, $member);
 
-        $this->assertTrue(count($chainBundle->chain) > 0);
-        $this->assertEquals(array_keys($chainBundle->chain)[0], $chain);
+        $this->assertTrue(count($this->chainBundle->chain) > 0);
+        $this->assertEquals(array_keys($this->chainBundle->chain)[0], $chain);
+
+        $this->chainBundle->chain = [];
     }
 
     /**
@@ -53,11 +61,24 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
     {
         $chain = 'foo:chain';
         $member = 'foo:member';
-        $chainBundle = new ChainCommandBundle();
-        $chainBundle->registerAsMemberOf($chain, $member);
-        $chainBundle->registerAsMemberOf($chain, $member);
+        $this->chainBundle->registerAsMemberOf($chain, $member);
+        $this->chainBundle->registerAsMemberOf($chain, $member);
 
-        $this->assertEquals(1, count($chainBundle->chain[$chain]));
+        $this->assertEquals(1, count($this->chainBundle->chain[$chain]));
 
+
+        $this->chainBundle->chain = [];
+    }
+
+    /**
+     * Test registerDependencies method
+     *
+     * @author johnleytondiaz
+     * @covers \ChainCommandBundle::registerDependencies
+     * @return void
+     */
+    public function testRegisterDependencies()
+    {
+        
     }
 }

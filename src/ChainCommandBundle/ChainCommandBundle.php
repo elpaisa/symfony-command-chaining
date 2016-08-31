@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Console\Application;
+use Carbon\Carbon;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ChainCommandBundle extends Bundle
@@ -22,6 +23,24 @@ class ChainCommandBundle extends Bundle
     public $trackThese = [];
 
     /**
+     * @var LoggerInterface
+     */
+    private $_logger;
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        if (!$this->_logger) {
+            var_dump(get_class($this->container));
+            $this->_logger = $this->container->get('logger');
+        }
+
+        return $this->_logger;
+    }
+
+    /**
      * Registers a command as a member of another in the chain
      *
      * @param string $chain
@@ -33,6 +52,9 @@ class ChainCommandBundle extends Bundle
         if (isset($this->chain[$chain]) && in_array($member, $this->chain[$chain])) {
             throw new \Exception("Duplicate member attempt for $chain => $member");
         }
+
+        $this->getLogger()->info("$chain is a master command of a command chain that has registered member commands");
+        $this->getLogger()->info("$member registered as a member of $chain command chain");
 
         $this->chain[$chain]   = $this->chain[$chain] ?? [];
         $this->chain[$chain][] = $member;
@@ -93,9 +115,12 @@ class ChainCommandBundle extends Bundle
                     $isChild) . " command chain and cannot be executed on its own."
             );
         }
+        $this->getLogger()->info("Executing $command command itself first:");
 
         $call = $callback($output);
         $this->runDependencies($command);
+
+        $this->getLogger()->info("Execution of $command chain completed");
 
         return (int)$call;
     }
@@ -112,6 +137,7 @@ class ChainCommandBundle extends Bundle
         if (!isset($this->chain[$command]) || !is_array($this->chain[$command])) {
             return;
         }
+
 
         foreach ($this->chain[$command] as $chain) {
             $this->trackThese[$chain]

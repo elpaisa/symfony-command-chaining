@@ -7,31 +7,17 @@ framework:
         strict_requirements: true
     profiler: { only_exceptions: false }
 
-web_profiler:
-    toolbar: true
-    intercept_redirects: false
-
 monolog:
     handlers:
-        main:
+        # this "file_log" key could be anything
+        file_log:
             type: stream
+            # log to var/logs/(environment).log
             path: "%kernel.logs_dir%/%kernel.environment%.log"
+            # log *all* messages (debug is lowest level)
             level: debug
-            channels: [!event]
-        console:
-            type:   console
-            channels: [!event, !doctrine]
-        # uncomment to get logging in your browser
-        # you may have to allow bigger header sizes in your Web server configuration
-        #firephp:
-        #    type:   firephp
-        #    level:  info
-        #chromephp:
-        #    type:   chromephp
-        #    level:  info
 
-assetic:
-    use_controller: true
-
-#swiftmailer:
-#    delivery_address: me@example.com
+        syslog_handler:
+            type: syslog
+            # log error-level messages and higher
+            level: error
