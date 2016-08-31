@@ -33,7 +33,6 @@ class ChainCommandBundle extends Bundle
     public function getLogger()
     {
         if (!$this->_logger) {
-            var_dump(get_class($this->container));
             $this->_logger = $this->container->get('logger');
         }
 

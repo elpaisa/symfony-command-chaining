@@ -12,17 +12,23 @@ use ChainCommandBundle\ChainCommandBundle;
 
 class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var ChainCommandBundle
+     */
     public $chainBundle;
 
+    /**
+     * @coversNothing
+     * @return void
+     */
     protected function setUp()
     {
         parent::setUp();
-//
         $this->chainBundle = new ChainCommandBundle();
 
         $container = $this->getMockBuilder(\Symfony\Component\DependencyInjection\Container::class)
-            ->setMethods(['get'])
-            ->getMock();
+                          ->setMethods(['get'])
+                          ->getMock();
         $container->expects($this->any())
                   ->method('get')
                   ->willReturn(new \Symfony\Bridge\Monolog\Logger('app'));
@@ -39,7 +45,7 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisterAsMemberOf()
     {
-        $chain = 'foo:chain';
+        $chain  = 'foo:chain';
         $member = 'foo:member';
         $this->chainBundle->registerAsMemberOf($chain, $member);
 
@@ -59,13 +65,12 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisterAsMemberOfException()
     {
-        $chain = 'foo:chain';
+        $chain  = 'foo:chain';
         $member = 'foo:member';
         $this->chainBundle->registerAsMemberOf($chain, $member);
         $this->chainBundle->registerAsMemberOf($chain, $member);
 
         $this->assertEquals(1, count($this->chainBundle->chain[$chain]));
-
 
         $this->chainBundle->chain = [];
     }
@@ -79,6 +84,6 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisterDependencies()
     {
-        
+
     }
 }
