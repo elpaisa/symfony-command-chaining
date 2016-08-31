@@ -14,6 +14,7 @@ namespace Tests\ChainCommandBundle;
 
 use ChainCommandBundle\ChainCommandBundle;
 use FooBundle\FooBundle;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
 {
@@ -51,6 +52,29 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
         $this->chainBundle->chain = [];
 
         return $this->chainBundle;
+    }
+
+    /**
+     * @param string $chain
+     * @param string $member
+     * @return FooBundle
+     */
+    public function getCommandMock($chain, $member)
+    {
+        $command = $this
+            ->getMockBuilder(\FooBundle\FooBundle::class)
+            ->setMethods(['depends', 'getCommandName'])
+            ->getMock();
+        $command
+            ->expects($this->any())
+            ->method('depends')
+            ->willReturn([$chain]);
+
+        $command
+            ->method('getCommandName')
+            ->willReturn($member);
+
+        return $command;
     }
 
     /**
@@ -103,18 +127,7 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
     {
         $chain   = 'foo:chain';
         $member  = 'foo:member';
-        $command = $this
-            ->getMockBuilder(\FooBundle\FooBundle::class)
-            ->setMethods(['depends', 'getCommandName'])
-            ->getMock();
-        $command
-            ->expects($this->any())
-            ->method('depends')
-            ->willReturn([$chain]);
-
-        $command
-            ->method('getCommandName')
-            ->willReturn($member);
+        $command = $this->getCommandMock($chain, $member);
 
         $chainBundle = $this->getChainingBundle();
         $chainBundle->registerDependencies($command);
@@ -124,7 +137,7 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test registerDependencies method
+     * Test isChild method
      *
      * @author johnleytondiaz
      * @covers \ChainCommandBundle::isChild
@@ -146,6 +159,30 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
         $isChild = $chainBundle->isChild($member);
 
         $this->assertTrue($isChild === false);
+
+    }
+
+    /**
+     * Test execute method
+     *
+     * @author johnleytondiaz
+     * @covers \ChainCommandBundle::execute
+     * @return void
+     */
+    public function testExecute()
+    {
+        $chain       = 'foo:chain';
+        $member      = 'foo:member';
+        $command     = $this->getCommandMock($chain, $member);
+        $chainBundle = $this->getChainingBundle();
+
+        $chainBundle->registerDependencies($command);
+
+        $execute = $chainBundle->execute($command->getName(), new ConsoleOutput(), function () {
+            return 1;
+        });
+
+        $this->assertTrue($execute === 1);
 
     }
 }
