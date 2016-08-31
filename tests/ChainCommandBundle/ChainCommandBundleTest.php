@@ -9,7 +9,6 @@
 namespace Tests\ChainCommandBundle;
 
 use ChainCommandBundle\ChainCommandBundle;
-use Symfony\Component\DependencyInjection\Exception\LogicException;
 
 class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,6 +27,24 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
      * Test registerAsMemberOf method
      *
      * @author johnleytondiaz
+     * @covers \ChainCommandBundle::registerAsMemberOf
+     * @return void
+     */
+    public function testRegisterAsMemberOf()
+    {
+        $chain = 'foo:chain';
+        $member = 'foo:member';
+        $chainBundle = new ChainCommandBundle();
+        $chainBundle->registerAsMemberOf($chain, $member);
+
+        $this->assertTrue(count($chainBundle->chain) > 0);
+        $this->assertEquals(array_keys($chainBundle->chain)[0], $chain);
+    }
+
+    /**
+     * Test registerAsMemberOf method exception
+     *
+     * @author johnleytondiaz
      * @expectedException \Exception
      * @covers \ChainCommandBundle::registerAsMemberOf
      * @return void
@@ -43,6 +60,4 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($chainBundle->chain[$chain]));
 
     }
-
-
 }
