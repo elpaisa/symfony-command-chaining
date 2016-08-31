@@ -43,13 +43,13 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Cleans chain attribute and returns the mocked class
-     * 
+     *
      * @return ChainCommandBundle
      */
     public function getChainingBundle()
     {
         $this->chainBundle->chain = [];
-        
+
         return $this->chainBundle;
     }
 
@@ -62,14 +62,14 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisterAsMemberOf()
     {
-        $chain  = 'foo:chain';
-        $member = 'foo:member';
+        $chain       = 'foo:chain';
+        $member      = 'foo:member';
         $chainBundle = $this->getChainingBundle();
         $chainBundle->registerAsMemberOf($chain, $member);
 
         $this->assertTrue(count($chainBundle->chain) > 0);
         $this->assertEquals(array_keys($chainBundle->chain)[0], $chain);
- 
+
     }
 
     /**
@@ -82,8 +82,8 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisterAsMemberOfException()
     {
-        $chain  = 'foo:chain';
-        $member = 'foo:member';
+        $chain       = 'foo:chain';
+        $member      = 'foo:member';
         $chainBundle = $this->getChainingBundle();
         $chainBundle->registerAsMemberOf($chain, $member);
         $chainBundle->registerAsMemberOf($chain, $member);
@@ -101,8 +101,8 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
      */
     public function testRegisterDependencies()
     {
-        $chain = 'foo:chain';
-        $member = 'foo:member';
+        $chain   = 'foo:chain';
+        $member  = 'foo:member';
         $command = $this
             ->getMockBuilder(\FooBundle\FooBundle::class)
             ->setMethods(['depends', 'getCommandName'])
@@ -121,5 +121,31 @@ class ChainCommandBundleTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array_keys($chainBundle->chain)[0], $chain);
         $this->assertEquals($chainBundle->chain[$chain][0], $member);
+    }
+
+    /**
+     * Test registerDependencies method
+     *
+     * @author johnleytondiaz
+     * @covers \ChainCommandBundle::isChild
+     * @return void
+     */
+    public function testIsChild()
+    {
+        $chain       = 'foo:chain';
+        $member      = 'foo:member';
+        $chainBundle = $this->getChainingBundle();
+        $chainBundle->registerAsMemberOf($chain, $member);
+
+        $isChild = $chainBundle->isChild($member);
+
+        $this->assertInternalType('array', $isChild);
+
+        $this->chainBundle->chain = [];
+
+        $isChild = $chainBundle->isChild($member);
+
+        $this->assertTrue($isChild === false);
+
     }
 }
